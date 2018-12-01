@@ -1,27 +1,27 @@
-import React,{Component} from 'react';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
+import React, { Component } from "react";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormGroup from "@material-ui/core/FormGroup";
 
-import { connect } from 'react-redux' 
-import { addCustomer } from '../actions'
+import { connect } from "react-redux";
+import { addCustomer } from "../actions";
 
 class AddCustomerDialog extends Component {
-  constructor(props){
+  constructor(props) {
     super();
-    this.state={
-      name: '',
-      nameError: '',
-      sex : 'male',
-      birthDate: '',   
-      birthDateError: '',
-    } 
+    this.state = {
+      name: "",
+      nameError: "",
+      sex: "male",
+      birthDate: "",
+      birthDateError: ""
+    };
   }
 
   handleChange = name => event => {
@@ -29,21 +29,29 @@ class AddCustomerDialog extends Component {
   };
 
   createUser = () => {
-    if( this.state.name.length == 0){
-      this.setState({ nameError: 'provide a name'})
-    }else {
-      this.setState({ nameError: ''})
+    if (this.state.name.length === 0) {
+      this.setState({ nameError: "provide a name" });
+    } else {
+      this.setState({ nameError: "" });
     }
-    if( this.state.birthDate.length == 0){
-      this.setState({ birthDateError: 'select a birth date'})
-    }else{
-      this.setState({ birthDateError: ''})
+    if (this.state.birthDate.length === 0) {
+      this.setState({ birthDateError: "select a birth date" });
+    } else {
+      this.setState({ birthDateError: "" });
     }
-    
+
     const { name, sex, birthDate } = this.state;
-    this.props.addCustomer({_id:Math.floor(Math.random() * 70) + 1  , name, sex, birthDate});
+    const _id = Math.floor(Math.random() * 70) + 1;
+    
+    this.props.addCustomer({
+      _id,
+      name,
+      sex,
+      birthDate,
+      avatar: `http://i.pravatar.cc/200?img=${_id}`
+    });
     this.props.close();
-  }
+  };
 
   render() {
     return (
@@ -54,13 +62,19 @@ class AddCustomerDialog extends Component {
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="form-dialog-title">Add a Customer</DialogTitle>
-          <DialogContent style={{display:'flex',flexDirection:'column', justifyContent: 'space-between'}}>
+          <DialogContent
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between"
+            }}
+          >
             <TextField
               autoFocus
               margin="dense"
               id="name"
               label="Name"
-              onChange={this.handleChange('name')}
+              onChange={this.handleChange("name")}
               error={this.state.nameError.length > 0}
               helperText={this.state.nameError}
               fullWidth
@@ -69,8 +83,8 @@ class AddCustomerDialog extends Component {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.sex == 'female'}
-                    onChange={this.handleChange('sex')}
+                    checked={this.state.sex === "female"}
+                    onChange={this.handleChange("sex")}
                     value="female"
                   />
                 }
@@ -79,8 +93,8 @@ class AddCustomerDialog extends Component {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.sex == 'male'}
-                    onChange={this.handleChange('sex')}
+                    checked={this.state.sex === "male"}
+                    onChange={this.handleChange("sex")}
                     value="male"
                     color="primary"
                   />
@@ -92,20 +106,19 @@ class AddCustomerDialog extends Component {
               id="date"
               label="Birthday"
               type="date"
-              
               InputLabelProps={{
-                shrink: true,
+                shrink: true
               }}
-              onChange={this.handleChange('birthDate')}
+              onChange={this.handleChange("birthDate")}
               error={this.state.birthDateError.length > 0}
               helperText={this.state.birthDateError}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.props.close} color="primary">
+            <Button onClick={this.props.close} color="secondary">
               Cancel
             </Button>
-            <Button onClick={this.createUser}color="primary">
+            <Button onClick={this.createUser} color="primary">
               Subscribe
             </Button>
           </DialogActions>
@@ -115,5 +128,11 @@ class AddCustomerDialog extends Component {
   }
 }
 
+function mapStateToProps({cusomersList}){
+  return({cusomersList})
+}
 
-export default connect(null,{addCustomer})(AddCustomerDialog)
+export default connect(
+   mapStateToProps,
+  { addCustomer }
+)(AddCustomerDialog);

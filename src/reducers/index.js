@@ -1,5 +1,8 @@
-import { combineReducers } from 'redux';
-import customersListReducer from './customersListReducer'
+import { combineReducers } from "redux";
+import customersListReducer from "./customersListReducer";
+import customerFiltredListReducer from "./customerFiltredListReducer";
+
 export default combineReducers({
-    cusomersList :customersListReducer,
-})
+  cusomersList: customersListReducer,
+  customerFiltredList: customerFiltredListReducer
+});
