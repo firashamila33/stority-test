@@ -11,13 +11,16 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
 import PersonPin from '@material-ui/icons/PersonPin';
 import SnackBar from './SnackBar';
+import faker from "faker/locale/de";
 import { connect } from "react-redux";
 import { addCustomer } from "../actions";
+import {editCustomer} from '../actions/CRUD'
 
 class AddCustomerDialog extends Component {
   constructor(props) {
-    super();
+    super(props);
     this.state = {
+      _id:-1,
       name: "",
       nameError: "",
       sex: "male",
@@ -27,6 +30,7 @@ class AddCustomerDialog extends Component {
     };
   }
 
+  
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
   };
@@ -35,57 +39,65 @@ class AddCustomerDialog extends Component {
     this.setState({snackIsOpen: !this.state.snackIsOpen })
   }
 
-  createUser = () => {
-    console.log(this.state)
+  handleSubscribeBtn = () => {
+    const { name, sex, birthDate } = this.state;
+    const { addCustomer, close, customer, editCustomer }= this.props;
 
-    console.log(_.isEmpty(this.state.name))
-    if (_.isEmpty(this.state.name)) {
+    if (_.isEmpty(name)) {
       this.setState({ nameError: "provide a name" });
-      console.log('I am setting nameEroor')
+      console.log("erroooooor")
       return 0;
     } else {
       this.setState({ nameError: "" });
     }
-    if (_.isEmpty(this.state.birthDate)) {
+    if (_.isEmpty(birthDate)) {
       this.setState({ birthDateError: "select a birth date" });
       return 0;
     } else {
       this.setState({ birthDateError: "" });
     }
-    console.log(this.state)
-
-    const { name, sex, birthDate } = this.state;
-    const _id = Math.floor(Math.random() * 70) + 1;
-
-    if(_.isEmpty(this.state.nameError) && _.isEmpty(this.state.birthDateError)){
-      console.log(_.isEmpty(this.state.nameError))
-      console.log(_.isEmpty(this.state.birthDateError))
-      console.log(this.state)
-      this.props.addCustomer({
+    
+    if(customer){
+      this.setState({ _id: customer._id})
+      editCustomer({
+        _id: customer._id,
+        name,
+        sex,
+        birthDate,
+        avatar: customer.avatar,
+      })
+    }else{
+      const _id = Math.floor(Math.random() * 990000) + 1;
+      this.setState({ _id });
+      addCustomer({
         _id,
         name,
         sex,
         birthDate,
-        avatar: `http://i.pravatar.cc/200?img=${_id}`
+        avatar: faker.fake("{{internet.avatar}}"),
       });
-  
-      this.handleToggleSnack()
-      this.props.close();
     }
-    
-  };
+    this.handleToggleSnack()
+    this.setState({ name: '' , birthDate:''})
+    close();
+  }
+
+  
 
   render() {
+    const { customer } = this.props;
     return (
       <div>
         <Dialog
           open={this.props.open}
           onClose={this.props.close}
           aria-labelledby="form-dialog-title"
+          maxWidth={'xs'}
+          fullWidth
         >
           <DialogTitle id="form-dialog-title">
-          Add a Customer
-          <PersonPin/>
+            {customer ? `EDIT ${customer.name}` : 'Add a Customer'} 
+            <PersonPin/>
           </DialogTitle>
           <DialogContent
             style={{
@@ -99,6 +111,7 @@ class AddCustomerDialog extends Component {
               margin="dense"
               id="name"
               label="Name"
+              defaultValue= {customer ? customer.name : ''}
               onChange={this.handleChange("name")}
               error={this.state.nameError.length > 0}
               helperText={this.state.nameError}
@@ -108,7 +121,7 @@ class AddCustomerDialog extends Component {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.sex === "female"}
+                    checked={customer ? customer.sex ==='female' : this.state.sex === "female"}
                     onChange={this.handleChange("sex")}
                     value="female"
                   />
@@ -118,7 +131,7 @@ class AddCustomerDialog extends Component {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.sex === "male"}
+                    checked={customer ? customer.sex ==='male' : this.state.sex === "male"}
                     onChange={this.handleChange("sex")}
                     value="male"
                     color="primary"
@@ -131,6 +144,7 @@ class AddCustomerDialog extends Component {
               id="date"
               label="Birthday"
               type="date"
+              defaultValue= {customer ? customer.birthDate : ''}
               InputLabelProps={{
                 shrink: true
               }}
@@ -143,12 +157,18 @@ class AddCustomerDialog extends Component {
             <Button onClick={this.props.close} color="secondary">
               Cancel
             </Button>
-            <Button onClick={this.createUser.bind(this)} color="primary">
-              Subscribe
+            <Button onClick={this.handleSubscribeBtn} color="primary">
+              {!customer ? 'Add' : 'Edit'}
             </Button>
           </DialogActions>
         </Dialog>
-        <SnackBar open={this.state.snackIsOpen} close={this.handleToggleSnack} messageInfo={`Customer ${this.state.name} Aded`}/>
+        <SnackBar 
+          open={this.state.snackIsOpen}
+          close={this.handleToggleSnack} 
+          customerId={this.state._id} 
+          messageInfo={`Customer ${this.state.name} ${customer ? 'Edited' : 'Aded'}`}
+          undoAdd={true}
+        />
       </div>
     );
   }
@@ -160,5 +180,5 @@ function mapStateToProps({cusomersList}){
 
 export default connect(
    mapStateToProps,
-  { addCustomer }
+  { addCustomer, editCustomer }
 )(AddCustomerDialog);

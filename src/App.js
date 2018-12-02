@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { populate_fake_customers } from "./actions";
 import CustomersList from "./components/CustomersList";
 import SearchBar from "./components/SearchBar";
 class App extends Component {
@@ -11,9 +9,7 @@ class App extends Component {
     };
   }
 
-  componentWillMount() {
-    this.props.populate_fake_customers(11);
-  }
+  
   activateFilter = filterActivated => {
     this.setState({ filterActivated });
   };
@@ -28,7 +24,4 @@ class App extends Component {
   }
 }
 
-export default connect(
-  null,
-  { populate_fake_customers }
-)(App);
+export default App;

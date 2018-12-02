@@ -6,11 +6,12 @@ import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import Zoom from '@material-ui/core/Zoom';
-import Paper from '@material-ui/core/Paper'
 import CustomerCard from "./CustomerCard";
+import FakerDialog from './fakerDialog';
 import _ from "lodash";
 
 class CustomersList extends Component {
+  
   render() {
     const {
       classes,
@@ -33,7 +34,7 @@ class CustomersList extends Component {
             >
               {DisplayedListIsEmpty ? 'No' : displayed_custmesrs_List.length } Results Found
             </Typography>
-            <Divider variant="root" />
+            <Divider variant="middle" />
           </div>
         </Zoom>
         <div style={{ padding: 30 }}>
@@ -45,14 +46,18 @@ class CustomersList extends Component {
                     key={customer._id}
                     className={classes.paper}
                     customer={customer}
+                    confirmDeleteCustomer={this.confirmDeleteCustomer}
                   />
                 </Grid>
               ))}
             {!filterActivated && DisplayedListIsEmpty && (
-              <h1>INSERT NEW CUSTOMERS</h1> //TODO:
+              <Typography style={{margin:'auto',textAlign:'center'}} component="h2" variant="display2" gutterBottom>
+                  INSERT NEW CUSTOMERS
+              </Typography> 
             )}
           </Grid>
         </div>
+        <FakerDialog/>
       </div>
     );
   }

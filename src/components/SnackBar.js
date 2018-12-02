@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
+import { connect } from 'react-redux'
+import { deleteCustomer } from '../actions'
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -17,9 +19,10 @@ class SnackBar extends Component {
     this.props.close();
   };
 
+  
   render() {
     const { classes } = this.props;
-    const { open, messageInfo } = this.props;
+    const { open, messageInfo, customerId, deleteCustomer } = this.props;
 
     return (
       <div>
@@ -41,7 +44,10 @@ class SnackBar extends Component {
               key="undo"
               color="secondary"
               size="small"
-              onClick={this.handleClose}
+              onClick={() => {
+                if(this.props.undoAdd)deleteCustomer(customerId);
+                this.handleClose();
+              }}
             >
               UNDO
             </Button>,
@@ -65,4 +71,4 @@ SnackBar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(SnackBar);
+export default withStyles(styles)(connect(null,{ deleteCustomer })((SnackBar)));
