@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import _ from 'lodash'
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -8,7 +9,8 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Checkbox from "@material-ui/core/Checkbox";
 import FormGroup from "@material-ui/core/FormGroup";
-
+import PersonPin from '@material-ui/icons/PersonPin';
+import SnackBar from './SnackBar';
 import { connect } from "react-redux";
 import { addCustomer } from "../actions";
 
@@ -20,7 +22,8 @@ class AddCustomerDialog extends Component {
       nameError: "",
       sex: "male",
       birthDate: "",
-      birthDateError: ""
+      birthDateError: "",
+      snackIsOpen: false,
     };
   }
 
@@ -28,29 +31,48 @@ class AddCustomerDialog extends Component {
     this.setState({ [name]: event.target.value });
   };
 
+  handleToggleSnack = () => {
+    this.setState({snackIsOpen: !this.state.snackIsOpen })
+  }
+
   createUser = () => {
-    if (this.state.name.length === 0) {
+    console.log(this.state)
+
+    console.log(_.isEmpty(this.state.name))
+    if (_.isEmpty(this.state.name)) {
       this.setState({ nameError: "provide a name" });
+      console.log('I am setting nameEroor')
+      return 0;
     } else {
       this.setState({ nameError: "" });
     }
-    if (this.state.birthDate.length === 0) {
+    if (_.isEmpty(this.state.birthDate)) {
       this.setState({ birthDateError: "select a birth date" });
+      return 0;
     } else {
       this.setState({ birthDateError: "" });
     }
+    console.log(this.state)
 
     const { name, sex, birthDate } = this.state;
     const _id = Math.floor(Math.random() * 70) + 1;
+
+    if(_.isEmpty(this.state.nameError) && _.isEmpty(this.state.birthDateError)){
+      console.log(_.isEmpty(this.state.nameError))
+      console.log(_.isEmpty(this.state.birthDateError))
+      console.log(this.state)
+      this.props.addCustomer({
+        _id,
+        name,
+        sex,
+        birthDate,
+        avatar: `http://i.pravatar.cc/200?img=${_id}`
+      });
+  
+      this.handleToggleSnack()
+      this.props.close();
+    }
     
-    this.props.addCustomer({
-      _id,
-      name,
-      sex,
-      birthDate,
-      avatar: `http://i.pravatar.cc/200?img=${_id}`
-    });
-    this.props.close();
   };
 
   render() {
@@ -61,7 +83,10 @@ class AddCustomerDialog extends Component {
           onClose={this.props.close}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Add a Customer</DialogTitle>
+          <DialogTitle id="form-dialog-title">
+          Add a Customer
+          <PersonPin/>
+          </DialogTitle>
           <DialogContent
             style={{
               display: "flex",
@@ -118,11 +143,12 @@ class AddCustomerDialog extends Component {
             <Button onClick={this.props.close} color="secondary">
               Cancel
             </Button>
-            <Button onClick={this.createUser} color="primary">
+            <Button onClick={this.createUser.bind(this)} color="primary">
               Subscribe
             </Button>
           </DialogActions>
         </Dialog>
+        <SnackBar open={this.state.snackIsOpen} close={this.handleToggleSnack} messageInfo={`Customer ${this.state.name} Aded`}/>
       </div>
     );
   }

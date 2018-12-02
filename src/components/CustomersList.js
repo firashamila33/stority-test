@@ -3,6 +3,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import Divider from "@material-ui/core/Divider";
+import Typography from "@material-ui/core/Typography";
+import Zoom from '@material-ui/core/Zoom';
+import Paper from '@material-ui/core/Paper'
 import CustomerCard from "./CustomerCard";
 import _ from "lodash";
 
@@ -20,23 +24,35 @@ class CustomersList extends Component {
       : cusomersList;
     let DisplayedListIsEmpty = _.isEmpty(displayed_custmesrs_List);
     return (
-      <div style={{ padding: 50 }}>
-        <Grid container spacing={24}>
-          {!DisplayedListIsEmpty &&
-            displayed_custmesrs_List.map(customer => (
-              <Grid key={customer._id} item xs={3}>
-                <CustomerCard
-                  key={customer._id}
-                  className={classes.paper}
-                  customer={customer}
-                />
-              </Grid>
-            ))}
-          {filterActivated && DisplayedListIsEmpty && <h1>NO RESULT FOUND</h1>}
-          {!filterActivated && DisplayedListIsEmpty && (
-            <h1>INSERT NEW CUSTOMERS</h1>
-          )}
-        </Grid>
+      <div>
+        <Zoom in={filterActivated} style={{ paddingTop: 10, transition: filterActivated ? '900ms' : '0ms' }}>
+          <div>
+            <Typography
+              style={{ color: "#222", fontWeight: "Bold", fontSize: 20 }}
+              color="textSecondary"
+            >
+              {DisplayedListIsEmpty ? 'No' : displayed_custmesrs_List.length } Results Found
+            </Typography>
+            <Divider variant="root" />
+          </div>
+        </Zoom>
+        <div style={{ padding: 30 }}>
+          <Grid container spacing={24}>
+            {!DisplayedListIsEmpty &&
+              displayed_custmesrs_List.map(customer => (
+                <Grid key={customer._id} item xs={3}>
+                  <CustomerCard
+                    key={customer._id}
+                    className={classes.paper}
+                    customer={customer}
+                  />
+                </Grid>
+              ))}
+            {!filterActivated && DisplayedListIsEmpty && (
+              <h1>INSERT NEW CUSTOMERS</h1> //TODO:
+            )}
+          </Grid>
+        </div>
       </div>
     );
   }

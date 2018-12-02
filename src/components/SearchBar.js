@@ -9,8 +9,11 @@ import InputBase from "@material-ui/core/InputBase";
 import { fade } from "@material-ui/core/styles/colorManipulator";
 import { withStyles } from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
+import PersonAdd from '@material-ui/icons/PersonAdd';
 import AddCustomerDialog from "./AddCustomerDialog";
 import Button from "@material-ui/core/Button";
+import IconButton from '@material-ui/core/IconButton';
+import Badge from '@material-ui/core/Badge'
 import { filterCustomers, initializeFilter } from "../actions";
 
 class SearchBar extends Component {
@@ -48,19 +51,21 @@ class SearchBar extends Component {
       <div className={classes.root}>
         <AppBar position="static" style={{ backgroundColor: "#AB0F59" }}>
           <Toolbar>
-            <Typography
-              className={classes.title}
-              variant="h6"
-              color="inherit"
-              noWrap
-            >
-              STORITY CUSTOMERS
-            </Typography>
+            <Badge color="primary" badgeContent={this.props.cusomersList.length} invisible={false}>
+              <Typography
+                className={classes.title}
+                variant="h6"
+                color="inherit"
+                noWrap
+              >
+                STORITY CUSTOMERS
+              </Typography>            
+            </Badge>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
               {/* <Button color="default" onClick={console.log('show all')}>Show All</Button> */}
             </div>
-            <div className={classes.search}>
+            <div className={classes.search} style={{marginRight:'10px'}}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
               </div>
@@ -75,7 +80,8 @@ class SearchBar extends Component {
             </div>
             <div className={classes.sectionDesktop}>
               <Button color="inherit" onClick={this.handleOpen}>
-                ADD NEW CUSTOMER
+                ADD CUSTOMER &nbsp;
+                  <PersonAdd fontSize={'default'} className={classes.rightIcon} />
               </Button>
             </div>
           </Toolbar>
@@ -150,7 +156,8 @@ const styles = theme => ({
         width: 200
       }
     }
-  }
+  },
+   
 });
 
 function mapStateToProps({ cusomersList }) {

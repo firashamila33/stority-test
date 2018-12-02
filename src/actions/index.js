@@ -30,7 +30,7 @@ export const initializeFilter = cusomersList => {
 
 export const populate_fake_customers = customers_count => {
   const list = _.range(0, customers_count).map(e => {
-    const _id = Math.floor(Math.random() * 1200) + 71;
+    const _id = Math.floor(Math.random() * 9999999) + 71;
     const name = faker.fake("{{name.lastName}}");
     const avatar = faker.fake("{{internet.avatar}}");
     const sex = Math.random() < 0.5 ? "female" : "male";
